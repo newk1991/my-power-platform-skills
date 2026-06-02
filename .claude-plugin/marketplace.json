@@ -21,6 +21,27 @@
         "pcf",
         "pa-yaml"
       ]
+    },
+    {
+      "name": "pp-devteam",
+      "source": "./plugins/pp-devteam",
+      "description": "A full AI development team for Power Platform projects — Orchestrator, Business Analyst, Data Architect, UI Designer, App Builder, QA Tester, and ALM Engineer — delivered as both skills and agents. Works across Canvas Apps, Power Pages, Model-Driven Apps, Code Apps, Dataverse, and Azure SQL.",
+      "category": "development",
+      "tags": [
+        "power platform",
+        "power apps",
+        "canvas apps",
+        "dataverse",
+        "azure sql",
+        "power pages",
+        "model-driven",
+        "business analyst",
+        "data architect",
+        "alm",
+        "orchestration",
+        "devteam",
+        "agents"
+      ]
     }
   ]
 }
