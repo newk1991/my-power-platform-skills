@@ -1,0 +1,26 @@
+{
+  "name": "my-power-platform-skills",
+  "owner": {
+    "name": "Dennis Newcomb"
+  },
+  "metadata": {
+    "description": "Custom Claude Code plugins for Power Platform development"
+  },
+  "plugins": [
+    {
+      "name": "canvas-creator-kit",
+      "source": "./plugins/canvas-creator-kit",
+      "description": "Extends canvas-apps with Power Apps Creator Kit (Fluent UI) control knowledge — CommandBar, FluentDetailsList, Nav, Panel/Dialog, pickers, charts, and more",
+      "category": "development",
+      "tags": [
+        "power platform",
+        "power apps",
+        "canvas apps",
+        "creator kit",
+        "fluent ui",
+        "pcf",
+        "pa-yaml"
+      ]
+    }
+  ]
+}
