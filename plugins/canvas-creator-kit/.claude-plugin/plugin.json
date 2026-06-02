@@ -1,0 +1,24 @@
+{
+  "name": "canvas-creator-kit",
+  "version": "1.0.0",
+  "description": "Extends canvas-apps with Power Apps Creator Kit (Fluent UI) control knowledge — exact schemas, Power Fx, and theming for CommandBar, FluentDetailsList, Nav, Panel/Dialog, pickers, charts, and more. Load alongside canvas-apps.",
+  "author": {
+    "name": "Dennis Newcomb",
+    "url": "https://github.com/newk1991"
+  },
+  "homepage": "https://github.com/newk1991/my-power-platform-skills/",
+  "repository": "https://github.com/newk1991/my-power-platform-skills/",
+  "license": "MIT",
+  "keywords": [
+    "canvas-creator-kit",
+    "creator-kit",
+    "powercat",
+    "fluent-ui",
+    "pcf",
+    "canvas-apps",
+    "pa-yaml",
+    "commandbar",
+    "detailslist",
+    "themejson"
+  ]
+}
