@@ -37,6 +37,7 @@ skills/
   pp-app-builder/SKILL.md
   pp-qa-tester/SKILL.md
   pp-alm-engineer/SKILL.md
+  pp-live-meeting/SKILL.md      <- Facilitation skill (skill-only; drives the roles live)
 ```
 
 ## When to Use Skills vs. Agents
@@ -60,6 +61,13 @@ Both forms implement the same role and read/write the same project profile and a
 | App Builder | `/pp-app-builder` | `pp-app-builder` | Implementing the application |
 | QA Tester | `/pp-qa-tester` | `pp-qa-tester` | Validating against requirements |
 | ALM Engineer | `/pp-alm-engineer` | `pp-alm-engineer` | Packaging, pipelines, deployment |
+
+## Live meeting facilitation
+
+`pp-live-meeting` (skill-only — no agent) drives the seven roles **live** from a real-time
+meeting transcript. It polls the `meeting` MCP server (tools `mcp__meeting__*`, provided by the
+companion **ai-meeting-tool** project) and dispatches the role agents as the conversation
+unfolds. Modes: copilot (propose), autopilot (apply), on_demand, notes_only.
 
 ## Shared Project Profile
 

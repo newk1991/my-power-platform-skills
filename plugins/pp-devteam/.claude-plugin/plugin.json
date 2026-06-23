@@ -1,7 +1,7 @@
 {
   "name": "pp-devteam",
-  "version": "1.0.0",
-  "description": "A full AI development team for Power Platform projects. Seven specialized roles — Orchestrator, Business Analyst, Data Architect, UI Designer, App Builder, QA Tester, and ALM Engineer — delivered as both user-invocable skills and Task-invocable subagents. Collaborates across Canvas Apps, Power Pages, Model-Driven Apps, Code Apps, Dataverse, and Azure SQL.",
+  "version": "1.1.0",
+  "description": "A full AI development team for Power Platform projects. Seven specialized roles — Orchestrator, Business Analyst, Data Architect, UI Designer, App Builder, QA Tester, and ALM Engineer — delivered as both user-invocable skills and Task-invocable subagents. Collaborates across Canvas Apps, Power Pages, Model-Driven Apps, Code Apps, Dataverse, and Azure SQL. Also includes pp-live-meeting, a live-meeting facilitation skill that streams a real-time transcript into the team (requires the companion meeting MCP server).",
   "author": {
     "name": "Dennis Newcomb",
     "url": "https://github.com/newk1991/my-power-platform-skills"
@@ -23,6 +23,8 @@
     "alm",
     "orchestration",
     "devteam",
-    "agents"
+    "agents",
+    "live meetings",
+    "transcription"
   ]
 }

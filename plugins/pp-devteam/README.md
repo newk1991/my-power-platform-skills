@@ -24,6 +24,24 @@ Power Platform project and start with the Orchestrator.
 | QA Tester | `/pp-qa-tester` | `pp-qa-tester` | Validate against user stories, PASS/FAIL/BLOCKED report |
 | ALM Engineer | `/pp-alm-engineer` | `pp-alm-engineer` | Solutions, pipelines, dev → test → prod promotion |
 
+## Live meeting facilitation
+
+`/pp-live-meeting` turns the team into a **real-time meeting copilot**: it streams a live,
+speaker-labeled transcript into Claude Code and routes what's said to the right role as the
+conversation happens — taking notes, surfacing recommendations, and (optionally) editing code.
+Pick a mode per meeting: `copilot` (propose), `autopilot` (apply), `on_demand` (act when asked),
+or `notes_only`.
+
+```
+/pp-live-meeting start copilot     # begin capture
+/loop 60s /pp-live-meeting         # hands-off: poll + act every 60s
+/pp-live-meeting stop              # end + wrap-up notes
+```
+
+> **Prerequisite:** the `meeting` MCP server (from the companion **ai-meeting-tool** project)
+> must be connected and `DEEPGRAM_API_KEY` set — it provides the real-time speech-to-text.
+> Reasoning runs in Claude Code on your subscription (no Anthropic API key).
+
 ## Supported Stacks
 
 Works with any combination of:
