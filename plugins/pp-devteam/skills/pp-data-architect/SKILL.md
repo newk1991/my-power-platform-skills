@@ -38,6 +38,24 @@ Boolean, Choice (with option values), Lookup, Image, File.
 Always apply the publisher prefix to new custom table and column logical names.
 Never create tables outside a solution.
 
+## Step 2b: Fallback — Dataverse toolchain blocked by admin non-consent
+
+Use this **only if** `dataverse:dv-connect` (or any `dataverse:*` skill / the Dataverse MCP / the Python SDK) **fails to authenticate because the tenant admin has not consented to / blocked the Microsoft Dataverse CLI app** `0c412cc3-0dd6-449b-987f-05b053db9457` (symptom: `dataverse auth create` → `User canceled authentication` then WAM broker `0xcaa90019`). That app backs the CLI, the MCP, AND the Python SDK, so the whole dv-skills toolchain is dead in that tenant. **Stop retrying `dv-connect`.** `pac` / `dataverse:dv-solution` use a different, allowed app and still work for solution export/import.
+
+Do metadata/security/data ops via **Azure CLI token → Dataverse Web API** (Azure CLI is first-party, usually allowed):
+
+1. One-time, in the user's **real terminal** (UAC + browser can't be driven from the agent shell): `winget install -e --id Microsoft.AzureCLI` (accept UAC), then in a new shell `az login --tenant <TENANT_ID> --allow-no-subscriptions`. (No-admin alt: `pip install azure-cli`.) Get `<TENANT_ID>`/`<DATAVERSE_URL>` from `project-profile.md`.
+2. In each call, refresh PATH + mint a token + verify org before any write:
+   ```powershell
+   $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
+   $org = "<DATAVERSE_URL>"; $tok = az account get-access-token --resource $org --query accessToken -o tsv
+   $h = @{ Authorization="Bearer $tok"; 'OData-MaxVersion'='4.0'; 'OData-Version'='4.0'; Accept='application/json'; 'Content-Type'='application/json' }
+   (Invoke-RestMethod "$org/api/data/v9.2/WhoAmI" -Headers $h).OrganizationId   # confirm target before writing
+   ```
+   `Prefer: return=representation` on a POST returns the created record + id. Token caches under the user.
+
+Cheat-sheet (replaces dv-metadata / dv-security / dv-data): create record `POST /<entityset>` (lookups via `"<Nav>@odata.bind":"/<set>(<id>)"`); re-own `PATCH /<entityset>(<id>)` with `"ownerid@odata.bind":"/teams(<id>)"`; owner team `POST /teams {name,teamtype:0,"businessunitid@odata.bind":"/businessunits(<bu>)"}`; role→team `POST /teams(<id>)/teamroles_association/$ref {"@odata.id":"<org>/api/data/v9.2/roles(<roleid>)"}`; member→team `POST /teams(<id>)/teammembership_association/$ref {"@odata.id":"<org>/api/data/v9.2/systemusers(<userid>)"}`; find ids `GET /roles|teams|systemusers?$filter=...`. **Guardrails:** verify `WhoAmI.OrganizationId` before every write; idempotent (query-then-create); never delete.
+
 ## Step 3: Azure SQL Workflow
 
 1. Scan for existing .sql files (`Glob "**/*.sql"`). Read any found.

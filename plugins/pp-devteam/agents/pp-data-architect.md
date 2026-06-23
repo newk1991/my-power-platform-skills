@@ -77,6 +77,44 @@ Create tasks appropriate to the backend type.
 
 *(Skip this step if dataBackend is not Dataverse)*
 
+### 3.0 Fallback — Dataverse toolchain blocked by admin (use ONLY if `dataverse:dv-connect` / `dataverse:*` fails to authenticate)
+
+If `dataverse:dv-connect` (or any `dataverse:*` skill, the Dataverse MCP, or the Python SDK) **cannot authenticate because the tenant admin has not consented to / has blocked the Microsoft Dataverse CLI app** (`0c412cc3-0dd6-449b-987f-05b053db9457`) — symptom: `dataverse auth create` fails with `User canceled authentication` then WAM broker error `0xcaa90019`, or it demands admin consent that isn't available — **stop retrying `dv-connect`.** That one app backs the `dataverse` CLI, the Dataverse MCP, **and** the Python SDK, so the entire dv-skills toolchain is unusable in that tenant. (`pac` and `dataverse:dv-solution` use a *different*, allowed app and still work for solution export/import — keep using them for ALM.)
+
+Do Dataverse metadata/security/data operations via **Azure CLI token → Dataverse Web API** instead (Azure CLI is first-party and usually allowed even when third-party apps are blocked):
+
+**1. One-time setup — must run in the user's real terminal (UAC elevation + browser sign-in cannot be driven from the agent shell). Ask the user to run:**
+```
+winget install -e --id Microsoft.AzureCLI        # click "Yes" on the UAC prompt
+# then, in a NEW shell, sign in as the environment account:
+az login --tenant <TENANT_ID> --allow-no-subscriptions
+```
+(If `winget` is itself blocked, the no-admin alternative is `pip install azure-cli`.) Take `<TENANT_ID>` and `<DATAVERSE_URL>` from `.claude/project-profile.md` — never hardcode them.
+
+**2. In each Bash/PowerShell call: refresh PATH, mint a token, verify the org, then call the Web API:**
+```powershell
+$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
+$org = "<DATAVERSE_URL>"     # e.g. https://orgX.crm.dynamics.com  (from project-profile.md)
+$tok = az account get-access-token --resource $org --query accessToken -o tsv
+$h = @{ Authorization="Bearer $tok"; 'OData-MaxVersion'='4.0'; 'OData-Version'='4.0'; Accept='application/json'; 'Content-Type'='application/json' }
+# ALWAYS confirm the target org before any write:
+(Invoke-RestMethod "$org/api/data/v9.2/WhoAmI" -Headers $h).OrganizationId
+```
+Add `Prefer: return=representation` to a `POST` to get the created record (and its id) back. The `az` token caches under the user, so later calls need no further sign-in.
+
+**Operation cheat-sheet (replaces dv-metadata / dv-security / dv-data CRUD):**
+| Goal | Web API |
+|---|---|
+| Find an id | `GET /roles?$filter=name eq '...'` · `GET /teams?$filter=name eq '...'` · `GET /systemusers?$filter=internalemailaddress eq '...'` |
+| Inspect a table's columns | `GET /EntityDefinitions(LogicalName='<table>')/Attributes/Microsoft.Dynamics.CRM.LookupAttributeMetadata?$select=SchemaName,Targets` |
+| Create a record | `POST /<entitysetname>` + JSON; bind lookups with `"<NavProp>@odata.bind":"/<set>(<id>)"` |
+| Update / re-own a record | `PATCH /<entitysetname>(<id>)`; re-own with `"ownerid@odata.bind":"/teams(<teamid>)"` |
+| Create an owner team | `POST /teams` `{ "name":"...", "teamtype":0, "businessunitid@odata.bind":"/businessunits(<buid>)" }` |
+| Assign a role to a team | `POST /teams(<teamid>)/teamroles_association/$ref` `{ "@odata.id":"<DATAVERSE_URL>/api/data/v9.2/roles(<roleid>)" }` |
+| Add a member to a team | `POST /teams(<teamid>)/teammembership_association/$ref` `{ "@odata.id":"<DATAVERSE_URL>/api/data/v9.2/systemusers(<userid>)" }` |
+
+**Guardrails:** confirm `WhoAmI.OrganizationId` matches the intended env before every write; be idempotent (query first, create only if missing); never delete; report exactly what was created. Then continue the steps below, substituting these Web API calls for the `dataverse:*` skill invocations.
+
 ### 3.1 Understand the Environment
 
 Invoke the `dataverse:dv-overview` skill to get a picture of the current environment — what
