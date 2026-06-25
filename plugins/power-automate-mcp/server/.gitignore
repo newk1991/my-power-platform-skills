@@ -1,0 +1,8 @@
+node_modules/
+build/
+.env
+.env.*
+!.env.example
+.token-cache.json
+driver-report.json
+*.log

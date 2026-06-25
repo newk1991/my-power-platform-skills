@@ -42,6 +42,22 @@
         "devteam",
         "agents"
       ]
+    },
+    {
+      "name": "power-automate-mcp",
+      "source": "./plugins/power-automate-mcp",
+      "description": "Free, self-hosted MCP server plus skills for Microsoft Power Automate cloud flows — build, debug, trigger, and govern flows with action-level run visibility (per-action inputs/outputs, loop iterations). Reuses your Azure CLI login; no paid subscription or API key. A drop-in replacement for the paid hosted FlowStudio MCP service.",
+      "category": "development",
+      "tags": [
+        "power platform",
+        "power automate",
+        "cloud flows",
+        "mcp",
+        "model-context-protocol",
+        "workflow automation",
+        "debugging",
+        "flowstudio"
+      ]
     }
   ]
 }
