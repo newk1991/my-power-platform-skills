@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { defineTool, type ToolContext } from "../register.js";
+import { POWERAPPS_RESOURCE } from "../auth.js";
 import type {
   GetLiveFlowResult,
   ListLiveConnectionsResult,
@@ -11,6 +12,9 @@ import type {
 } from "../types.js";
 
 const PS = "/providers/Microsoft.ProcessSimple";
+
+/** Connections live on the PowerApps host, not the Flow host (which 404s for them). */
+const POWERAPPS_HOST = "https://api.powerapps.com";
 
 /** Leaf of an apiId like `/providers/Microsoft.PowerApps/apis/shared_office365`. */
 function connectorLeaf(apiId: string | undefined): string {
@@ -163,6 +167,8 @@ export function registerDiscoverTools(server: McpServer, ctx: ToolContext): void
     },
     run: async (args, c): Promise<ListLiveConnectionsResult> => {
       const page = await c.api.get(`/providers/Microsoft.PowerApps/connections`, {
+        host: POWERAPPS_HOST,
+        resource: POWERAPPS_RESOURCE,
         query: { $filter: `environment eq '${args.environmentName}'` },
       });
       let raw: any[] = page?.value ?? [];

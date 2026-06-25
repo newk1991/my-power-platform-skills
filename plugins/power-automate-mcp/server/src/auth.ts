@@ -8,6 +8,12 @@ import type { Logger } from "./log.js";
  */
 export const FLOW_RESOURCE = "https://service.flow.microsoft.com/";
 
+/**
+ * Audience for the PowerApps API (`api.powerapps.com`). Connections live here,
+ * NOT on the Flow host — the Flow-audience token gets a 403/404 against it.
+ */
+export const POWERAPPS_RESOURCE = "https://service.powerapps.com/";
+
 interface CachedToken {
   token: string;
   /** Epoch milliseconds at which the token expires. */
@@ -18,7 +24,8 @@ interface CachedToken {
 const SKEW_MS = 5 * 60 * 1000;
 
 export interface TokenProvider {
-  getToken(): Promise<string>;
+  /** Mint/return a token for the given audience (defaults to the Flow resource). */
+  getToken(resource?: string): Promise<string>;
   invalidate(): void;
 }
 
@@ -27,32 +34,35 @@ export interface TokenProvider {
  * to `az account get-access-token`. No app registration, no secrets on disk.
  */
 export class AzCliTokenProvider implements TokenProvider {
-  private cache: CachedToken | null = null;
-  private inflight: Promise<string> | null = null;
+  // Cache + in-flight mint are keyed by audience, so Flow and PowerApps tokens
+  // don't evict each other.
+  private cache = new Map<string, CachedToken>();
+  private inflight = new Map<string, Promise<string>>();
 
   constructor(private readonly log: Logger) {}
 
   invalidate(): void {
-    this.cache = null;
+    this.cache.clear();
   }
 
-  async getToken(): Promise<string> {
+  async getToken(resource: string = FLOW_RESOURCE): Promise<string> {
     const now = Date.now();
-    if (this.cache && now < this.cache.expiresAtMs - SKEW_MS) {
-      return this.cache.token;
+    const cached = this.cache.get(resource);
+    if (cached && now < cached.expiresAtMs - SKEW_MS) {
+      return cached.token;
     }
-    // Collapse concurrent mints into one az invocation.
-    if (!this.inflight) {
-      this.inflight = this.mint().finally(() => {
-        this.inflight = null;
-      });
+    // Collapse concurrent mints for the same audience into one az invocation.
+    let pending = this.inflight.get(resource);
+    if (!pending) {
+      pending = this.mint(resource).finally(() => this.inflight.delete(resource));
+      this.inflight.set(resource, pending);
     }
-    return this.inflight;
+    return pending;
   }
 
-  private async mint(): Promise<string> {
+  private async mint(resource: string): Promise<string> {
     const raw = await runAz(
-      ["account", "get-access-token", "--resource", FLOW_RESOURCE, "-o", "json"],
+      ["account", "get-access-token", "--resource", resource, "-o", "json"],
       this.log,
     );
     let parsed: { accessToken?: string; expiresOn?: string; expires_on?: number };
@@ -64,12 +74,10 @@ export class AzCliTokenProvider implements TokenProvider {
     if (!parsed.accessToken) {
       throw new FlowError("AuthError", "az returned no accessToken. Run `az login`.");
     }
-    this.cache = {
-      token: parsed.accessToken,
-      expiresAtMs: resolveExpiry(parsed),
-    };
-    this.log.debug(`minted Flow token; expires in ${Math.round((this.cache.expiresAtMs - Date.now()) / 1000)}s`);
-    return this.cache.token;
+    const entry: CachedToken = { token: parsed.accessToken, expiresAtMs: resolveExpiry(parsed) };
+    this.cache.set(resource, entry);
+    this.log.debug(`minted token for ${resource}; expires in ${Math.round((entry.expiresAtMs - Date.now()) / 1000)}s`);
+    return entry.token;
   }
 }
 
@@ -146,19 +154,20 @@ function runAz(args: string[], _log: Logger): Promise<string> {
  * selected, so the default az path has zero extra dependencies.
  */
 export class DeviceCodeTokenProvider implements TokenProvider {
-  private cache: CachedToken | null = null;
+  private cache = new Map<string, CachedToken>();
   // Public Azure CLI client id — broadly pre-consented for first-party resources.
   private static readonly AZURE_CLI_CLIENT = "04b07795-8ddb-461a-bbee-02f9e1bf7b46";
 
   constructor(private readonly log: Logger) {}
 
   invalidate(): void {
-    this.cache = null;
+    this.cache.clear();
   }
 
-  async getToken(): Promise<string> {
+  async getToken(resource: string = FLOW_RESOURCE): Promise<string> {
     const now = Date.now();
-    if (this.cache && now < this.cache.expiresAtMs - SKEW_MS) return this.cache.token;
+    const cached = this.cache.get(resource);
+    if (cached && now < cached.expiresAtMs - SKEW_MS) return cached.token;
 
     // Non-literal specifier so the compiler does not require the optional package.
     const moduleName = "@azure/msal-node";
@@ -178,18 +187,19 @@ export class DeviceCodeTokenProvider implements TokenProvider {
       auth: { clientId, authority: `https://login.microsoftonline.com/${tenant}` },
     });
     const result = await pca.acquireTokenByDeviceCode({
-      scopes: [`${FLOW_RESOURCE}.default`],
+      scopes: [`${resource}.default`],
       deviceCodeCallback: (info: any) => {
         // Must go to stderr — stdout is the MCP stdio channel.
         this.log.notify(info.message);
       },
     });
     if (!result?.accessToken) throw new FlowError("AuthError", "Device-code flow returned no token.");
-    this.cache = {
+    const entry: CachedToken = {
       token: result.accessToken,
       expiresAtMs: result.expiresOn ? result.expiresOn.getTime() : Date.now() + 50 * 60 * 1000,
     };
-    return this.cache.token;
+    this.cache.set(resource, entry);
+    return entry.token;
   }
 }
 

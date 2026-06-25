@@ -12,6 +12,8 @@ export interface RequestOptions {
   body?: unknown;
   /** Override host (defaults to the non-regional router). */
   host?: string;
+  /** Override the token audience (defaults to the Flow resource; e.g. PowerApps for connections). */
+  resource?: string;
   /** Expect no response body (e.g. 204). */
   noBody?: boolean;
 }
@@ -51,7 +53,7 @@ export class FlowApi {
   }
 
   private async send(method: string, url: string, opts: RequestOptions, allowRetry: boolean): Promise<any> {
-    const token = await this.auth.getToken();
+    const token = await this.auth.getToken(opts.resource);
     const headers: Record<string, string> = {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -103,7 +105,7 @@ export class FlowApi {
       out.push(...items);
       const next: string | undefined = page.nextLink ?? page["@odata.nextLink"];
       if (!next || (cap !== undefined && out.length >= cap)) break;
-      page = await this.requestUrl("GET", next);
+      page = await this.requestUrl("GET", next, { resource: opts.resource });
     }
     return cap !== undefined ? out.slice(0, cap) : out;
   }
