@@ -38,4 +38,5 @@ profile, then the rest of the team works from that profile and the artifacts in
 Dataverse, and Azure SQL.
 
 > pp-devteam delegates implementation to the Microsoft `power-platform-skills` and `dataverse`
-> marketplace plugins, so install those alongside it.
+> marketplace plugins, and to the companion **power-automate-mcp** plugin (this marketplace) for
+> Power Automate cloud flow build/debug — so install those alongside it.

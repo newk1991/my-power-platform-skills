@@ -96,6 +96,13 @@ Delegates implementation to the Microsoft `power-platform-skills` and `dataverse
 `model-apps:genpage`, `code-apps-preview:create-code-app`). Those marketplace plugins must be
 installed for the App Builder, Data Architect, and ALM Engineer to function fully.
 
+For **Power Automate cloud flow** work (build, debug with action-level run inputs/outputs, and
+trigger / resubmit / cancel runs), the Orchestrator routes to the companion **power-automate-mcp**
+plugin in this same marketplace — skills `power-automate-build`, `power-automate-debug`, and
+`run-power-automate-mcp`. It bundles a free local MCP server that reuses `az login` (no paid
+FlowStudio subscription). Install `power-automate-mcp@my-power-platform-skills` and build its
+server once (`cd "$CLAUDE_PLUGIN_ROOT"/server && npm install && npm run build`).
+
 ## Out of Scope
 - Custom connectors (future Postman-based skill)
 - Power BI (separate workstream)

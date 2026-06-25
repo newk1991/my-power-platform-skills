@@ -31,6 +31,7 @@ Read `.claude/project-profile.md`.
 | `**/package.json` with pcftools / pcf-scripts / @microsoft/powerplatform | Frontend: Code App |
 | `**/*.cdsproj` or `**/solution.xml` | Dataverse solution present |
 | `**/*.sql` files or `CREATE TABLE` in any file | Data Backend: Azure SQL |
+| `**/Workflows/*.json` or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (use the `power-automate-mcp` plugin) |
 
 Run `pac env who 2>&1` via Bash to check Dataverse authentication.
 
@@ -57,6 +58,7 @@ Write `.claude/project-profile.md` (create `.claude/` directory if needed):
 - **environmentUrl**: <https://org.crm.dynamics.com> or "N/A"
 - **solutionName**: <name> or "N/A"
 - **customConnectors**: <comma-separated> or "none"
+- **automation**: <e.g. Power Automate cloud flows> or "none"
 - **complianceNotes**: <e.g. California SB 1383> or "none"
 - **targetUsers**: <roles/personas>
 - **lastUpdated**: <YYYY-MM-DD>
@@ -74,6 +76,7 @@ When the user describes a task, map it to the right skill:
 | build the app / implement / create the Canvas App | `/pp-app-builder` |
 | test the app / validate / QA | `/pp-qa-tester` |
 | deploy / set up the solution / create a pipeline | `/pp-alm-engineer` |
+| build/debug a Power Automate cloud flow / automate / why did my flow fail / trigger a run | `power-automate-build` / `power-automate-debug` (**power-automate-mcp** plugin) |
 | update the project profile / the stack changed | `/pp-orchestrator` (re-run) |
 
 ## Critical Constraints

@@ -49,6 +49,7 @@ Use `Glob` and `Grep` to scan the working directory for these indicators:
 | `**/*.sql` files or `CREATE TABLE` in any file | Data Backend: Azure SQL (likely) |
 | `pac env who` returns an environment URL | Dataverse environment connected |
 | `**/site/` + `.yml` + `adx_` prefixes in YAML | Power Pages (managed) |
+| `**/Workflows/*.json` (solution-exported cloud flows), or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (use the `power-automate-mcp` plugin) |
 
 Run `pac env who` via Bash to detect whether a Dataverse environment is currently authenticated:
 ```bash
@@ -80,6 +81,7 @@ Write `.claude/project-profile.md`:
 - **environmentUrl**: <https://org.crm.dynamics.com> (if Dataverse; "N/A" otherwise)
 - **solutionName**: <Dataverse solution name, or "N/A">
 - **customConnectors**: <comma-separated list, or "none">
+- **automation**: <e.g. "Power Automate cloud flows", or "none">
 - **complianceNotes**: <e.g. "California SB 1383 compliance reporting", or "none">
 - **targetUsers**: <who uses this app — roles, personas>
 - **lastUpdated**: <today's date YYYY-MM-DD>
@@ -101,9 +103,16 @@ Once the profile exists, you are a routing guide. When the user describes a task
 | "build the app", "implement", "create the Canvas App", "write the Power Pages site" | `pp-app-builder` |
 | "test the app", "validate", "check the user stories", "QA" | `pp-qa-tester` |
 | "deploy", "set up the solution", "create a pipeline", "promote to production", "package" | `pp-alm-engineer` |
+| "build a flow", "automate", "create/debug a Power Automate cloud flow", "why did my flow fail", "trigger or resubmit a run" | `power-automate-build` / `power-automate-debug` (from the **power-automate-mcp** plugin) |
 | "update the project profile", "the stack changed", "re-initialize" | Re-run this orchestrator |
 
 Provide the agent name and a one-sentence explanation of why it's the right choice. Do not do the specialized work yourself — route it.
+
+> Power Automate cloud flow work is delegated to the companion **power-automate-mcp** plugin
+> (a free local MCP server that reuses `az login`). Its skills — `power-automate-build`,
+> `power-automate-debug`, and `run-power-automate-mcp` — handle building, debugging (action-level
+> run inputs/outputs), and run control. Install `power-automate-mcp@my-power-platform-skills`
+> alongside pp-devteam and build its server once (`cd server && npm install && npm run build`).
 
 ---
 

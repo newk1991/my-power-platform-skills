@@ -48,13 +48,18 @@ Works with any combination of:
 
 - **Frontend:** Canvas App · Power Pages · Model-Driven App · Code App (React/Vite)
 - **Backend:** Dataverse · Azure SQL · SharePoint
+- **Automation:** Power Automate cloud flows — via the companion **power-automate-mcp** plugin
 
 It invokes the underlying Microsoft `power-platform-skills` and `dataverse` skills (e.g.
 `canvas-apps:canvas-app`, `dataverse:dv-metadata`, `power-pages:create-site`,
-`model-apps:genpage`, `code-apps-preview:create-code-app`) rather than reimplementing them.
+`model-apps:genpage`, `code-apps-preview:create-code-app`) rather than reimplementing them. For
+Power Automate cloud flows it routes to the companion **power-automate-mcp** plugin
+(`power-automate-build`, `power-automate-debug`, `run-power-automate-mcp`).
 
 > **Prerequisite:** the Microsoft `power-platform-skills` marketplace plugins must also be
 > installed, since the App Builder, Data Architect, and ALM Engineer delegate to those skills.
+> For Power Automate flow work, also install **power-automate-mcp** (this marketplace) and build
+> its bundled server once — the Orchestrator routes flow build/debug to its skills.
 
 ## Typical Workflow
 
