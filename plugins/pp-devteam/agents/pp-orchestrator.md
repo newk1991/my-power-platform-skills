@@ -49,7 +49,7 @@ Use `Glob` and `Grep` to scan the working directory for these indicators:
 | `**/*.sql` files or `CREATE TABLE` in any file | Data Backend: Azure SQL (likely) |
 | `pac env who` returns an environment URL | Dataverse environment connected |
 | `**/site/` + `.yml` + `adx_` prefixes in YAML | Power Pages (managed) |
-| `**/Workflows/*.json` (solution-exported cloud flows), or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (use the `power-automate-mcp` plugin) |
+| `**/Workflows/*.json` (solution-exported cloud flows), or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (route to Microsoft's official `power-automate` plugin) |
 
 Run `pac env who` via Bash to detect whether a Dataverse environment is currently authenticated:
 ```bash
@@ -103,16 +103,21 @@ Once the profile exists, you are a routing guide. When the user describes a task
 | "build the app", "implement", "create the Canvas App", "write the Power Pages site" | `pp-app-builder` |
 | "test the app", "validate", "check the user stories", "QA" | `pp-qa-tester` |
 | "deploy", "set up the solution", "create a pipeline", "promote to production", "package" | `pp-alm-engineer` |
-| "build a flow", "automate", "create/debug a Power Automate cloud flow", "why did my flow fail", "trigger or resubmit a run" | `power-automate-build` / `power-automate-debug` (from the **power-automate-mcp** plugin) |
+| "build a flow", "create a flow", "scaffold a flow", "automate" | `power-automate:build-flow` / `power-automate:create-flow` (Microsoft **power-automate** plugin) |
+| "debug a flow", "why did my flow fail", "diagnose a run", "inspect action outputs" | `power-automate:debug-flow` / `power-automate:diagnose-flow` |
+| "list my flows", "browse flows", "trigger or resubmit a run", "enable/disable a flow" | `power-automate:browse-flows` / `power-automate:manage-flows` |
 | "update the project profile", "the stack changed", "re-initialize" | Re-run this orchestrator |
 
 Provide the agent name and a one-sentence explanation of why it's the right choice. Do not do the specialized work yourself — route it.
 
-> Power Automate cloud flow work is delegated to the companion **power-automate-mcp** plugin
-> (a free local MCP server that reuses `az login`). Its skills — `power-automate-build`,
-> `power-automate-debug`, and `run-power-automate-mcp` — handle building, debugging (action-level
-> run inputs/outputs), and run control. Install `power-automate-mcp@my-power-platform-skills`
-> alongside pp-devteam and build its server once (`cd server && npm install && npm run build`).
+> Power Automate cloud flow work is delegated to Microsoft's official **power-automate** plugin,
+> which ships the `flowagent` MCP server. Its skills — `power-automate:build-flow`,
+> `power-automate:create-flow`, `power-automate:debug-flow`, `power-automate:diagnose-flow`,
+> `power-automate:manage-flows`, and `power-automate:browse-flows` — handle building, creating,
+> debugging (action-level run inputs/outputs), diagnosing runs, and run control (trigger /
+> resubmit / cancel). Install Microsoft's `power-automate` plugin alongside pp-devteam and run
+> `power-automate:setup` once to connect it. These skills auto-load on matching flow requests and
+> can also be invoked as `/power-automate:<skill>` or by name via the Skill tool.
 
 ---
 

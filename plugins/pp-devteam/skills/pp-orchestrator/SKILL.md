@@ -31,7 +31,7 @@ Read `.claude/project-profile.md`.
 | `**/package.json` with pcftools / pcf-scripts / @microsoft/powerplatform | Frontend: Code App |
 | `**/*.cdsproj` or `**/solution.xml` | Dataverse solution present |
 | `**/*.sql` files or `CREATE TABLE` in any file | Data Backend: Azure SQL |
-| `**/Workflows/*.json` or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (use the `power-automate-mcp` plugin) |
+| `**/Workflows/*.json` or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (route to Microsoft's official `power-automate` plugin) |
 
 Run `pac env who 2>&1` via Bash to check Dataverse authentication.
 
@@ -76,7 +76,9 @@ When the user describes a task, map it to the right skill:
 | build the app / implement / create the Canvas App | `/pp-app-builder` |
 | test the app / validate / QA | `/pp-qa-tester` |
 | deploy / set up the solution / create a pipeline | `/pp-alm-engineer` |
-| build/debug a Power Automate cloud flow / automate / why did my flow fail / trigger a run | `power-automate-build` / `power-automate-debug` (**power-automate-mcp** plugin) |
+| build/create/scaffold a Power Automate cloud flow / automate | `power-automate:build-flow` / `power-automate:create-flow` (Microsoft **power-automate** plugin) |
+| debug or diagnose a flow / why did my flow fail / inspect action outputs | `power-automate:debug-flow` / `power-automate:diagnose-flow` |
+| list or browse flows / trigger, resubmit or cancel a run / enable or disable a flow | `power-automate:browse-flows` / `power-automate:manage-flows` |
 | update the project profile / the stack changed | `/pp-orchestrator` (re-run) |
 
 ## Critical Constraints
