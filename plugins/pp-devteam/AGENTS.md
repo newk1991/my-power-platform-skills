@@ -21,6 +21,10 @@ specific project — all context flows through the profile and the `.claude/arti
 AGENTS.md                       <- Plugin guidance for AI agents (this file)
 CLAUDE.md                       <- Points to AGENTS.md
 README.md                       <- Human-facing overview
+hooks/
+  hooks.json                    <- SessionStart: routing-charter.js
+  routing-charter.js            <- injects routing-charter.md, only in Power Platform projects
+  routing-charter.md            <- which plugin owns which artifact (incl. Copilot Studio)
 agents/
   pp-orchestrator.md            <- Subagent personas (Task-invocable)
   pp-business-analyst.md
@@ -103,6 +107,28 @@ official **power-automate** plugin — skills `power-automate:build-flow`, `powe
 `power-automate:browse-flows`. That plugin ships the `flowagent` MCP server; install it alongside
 pp-devteam and run `power-automate:setup` once to connect. These skills auto-load on matching flow
 requests and can also be invoked as `/power-automate:<skill>` or by name via the Skill tool.
+
+## Routing charter and Copilot Studio
+
+At session start, `hooks/routing-charter.js` injects `hooks/routing-charter.md`: a short table of which plugin
+owns which artifact. It fires only when the project looks like Power Platform work: a `*.pa.yaml`, `Solution.xml`,
+`*.cdsproj`, `*.mcs.yml`, `powerpages.config.json`, `power.config.json` or `.claude/project-profile.md` within five
+levels. The scan is capped at 4,000 entries and takes about 0.1 s. It stays silent everywhere else.
+
+The charter exists so that Microsoft's **copilot-studio** plugin can be active in the same project. That plugin's
+own SessionStart prompt tells Claude that any request mentioning "Power Platform", or any repository holding an
+`agent.mcs.yml`, is Copilot Studio work. This marketplace therefore re-lists the plugin, as
+`copilot-studio@my-power-platform-skills`, pinned to a tested commit. Its marketplace entry replaces the plugin's
+hooks: Claude Code loads the entry's `hooks` **instead of** the plugin's `hooks/hooks.json`, which was verified
+on 2026-09-23. The entry keeps Microsoft's `setup.js`, which installs the npm packages its scripts need, and swaps
+the 11 KB routing prompt for a scoped note. Microsoft's skills and its four sub-agents (Advisor, Author, Manage,
+Test) load unchanged.
+
+Install `copilot-studio@my-power-platform-skills`, **not** `copilot-studio@skills-for-copilot-studio`: both
+register the same plugin name. To move to a newer upstream version:
+1. Bump `sha` in the marketplace entry.
+2. Diff upstream `hooks/hooks.json` for new hooks.
+3. Re-run the routing benchmark (see the README).
 
 ## Out of Scope
 - Custom connectors (future Postman-based skill)

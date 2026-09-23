@@ -50,6 +50,7 @@ Use `Glob` and `Grep` to scan the working directory for these indicators:
 | `pac env who` returns an environment URL | Dataverse environment connected |
 | `**/site/` + `.yml` + `adx_` prefixes in YAML | Power Pages (managed) |
 | `**/Workflows/*.json` (solution-exported cloud flows), or the project builds/debugs Power Automate flows | Automation: Power Automate cloud flows (route to Microsoft's official `power-automate` plugin) |
+| `**/agent.mcs.yml` (Copilot Studio agent YAML) | Copilot Studio agent present. Route agent work to the `copilot-studio` plugin; every other request keeps its usual route |
 
 Run `pac env who` via Bash to detect whether a Dataverse environment is currently authenticated:
 ```bash
@@ -106,7 +107,17 @@ Once the profile exists, you are a routing guide. When the user describes a task
 | "build a flow", "create a flow", "scaffold a flow", "automate" | `power-automate:build-flow` / `power-automate:create-flow` (Microsoft **power-automate** plugin) |
 | "debug a flow", "why did my flow fail", "diagnose a run", "inspect action outputs" | `power-automate:debug-flow` / `power-automate:diagnose-flow` |
 | "list my flows", "browse flows", "trigger or resubmit a run", "enable/disable a flow" | `power-automate:browse-flows` / `power-automate:manage-flows` |
+| "design / review / troubleshoot the Copilot Studio agent", "why does my agent answer..." | `copilot-studio` **Copilot Studio Advisor** sub-agent |
+| "add a topic / knowledge source / instructions to the agent", "edit the agent YAML" | `copilot-studio` **Copilot Studio Author** sub-agent |
+| "clone / pull / push / publish the agent" | `copilot-studio` **Copilot Studio Manage** sub-agent |
+| "test / evaluate the agent", "write eval cases for the agent" | `copilot-studio` **Copilot Studio Test** sub-agent; `eval-guide` for planning |
 | "update the project profile", "the stack changed", "re-initialize" | Re-run this orchestrator |
+
+**Route by the artifact, not by keywords.** "Power Platform", "environment", "solution" and "Copilot" appear in
+most requests. A repository that contains `agent.mcs.yml` files is still a canvas, Dataverse or flow project for
+every request that is not about the agent. Only requests about a Copilot Studio agent go to the `copilot-studio`
+sub-agents. Mixed requests get split: for example, a solution release goes to the ALM engineer, and publishing the
+agent afterwards goes to Copilot Studio Manage.
 
 Provide the agent name and a one-sentence explanation of why it's the right choice. Do not do the specialized work yourself — route it.
 

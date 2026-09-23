@@ -42,6 +42,40 @@
         "devteam",
         "agents"
       ]
+    },
+    {
+      "name": "copilot-studio",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/microsoft/skills-for-copilot-studio.git",
+        "sha": "fd9653d0ec743b39443596d7132f907d0d993f1f"
+      },
+      "description": "Microsoft's Copilot Studio authoring plugin (skills-for-copilot-studio 1.0.11, MIT), pinned and scoped so it can run alongside the other Power Platform plugins: its SessionStart routing prompt, which claims every 'Power Platform' request, is replaced by a scoped note. Its setup step still runs.",
+      "category": "development",
+      "tags": [
+        "power platform",
+        "copilot studio",
+        "agents",
+        "mcs.yml",
+        "knowledge",
+        "evals"
+      ],
+      "hooks": {
+        "SessionStart": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/setup.js\""
+              },
+              {
+                "type": "command",
+                "command": "node -e \"process.stdout.write(JSON.stringify({hookSpecificOutput:{hookEventName:'SessionStart',additionalContext:'Copilot Studio plugin, scoped by my-power-platform-skills. Its skills and its four sub-agents (Copilot Studio Advisor: design, review and troubleshooting; Author: edits the agent YAML; Manage: clone, pull, push and publish; Test: evaluations) are for work on a Copilot Studio agent: its instructions, topics, knowledge, actions, channels, authentication, publishing, its *.mcs.yml files or its evals. Delegate that work to the matching sub-agent. Canvas apps, model-driven apps, Dataverse, Power Automate, Power Pages, code apps, and solutions or ALM of non-agent components are not Copilot Studio work, even when the repository contains agent.mcs.yml files or the request mentions Power Platform, an environment or Copilot. Route those to the plugins built for them.'}}))\""
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
