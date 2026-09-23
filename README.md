@@ -14,14 +14,19 @@ claude plugin marketplace add newk1991/my-power-platform-skills
 |--------|-------------|
 | [canvas-creator-kit](plugins/canvas-creator-kit/) | Extends canvas-apps with Power Apps Creator Kit (Fluent UI) control knowledge |
 | [pp-devteam](plugins/pp-devteam/) | A full AI development team — Orchestrator, Business Analyst, Data Architect, UI Designer, App Builder, QA Tester, and ALM Engineer — delivered as both skills and agents. Its session-start routing charter lets the plugins below share one project |
-| copilot-studio | Microsoft's [skills-for-copilot-studio](https://github.com/microsoft/skills-for-copilot-studio) (MIT), pinned and **scoped**: its session-start prompt that claims every "Power Platform" request is replaced, so it can run next to canvas-apps, dataverse and power-automate |
 
 ## Install a plugin
 
 ```bash
 claude plugin install canvas-creator-kit@my-power-platform-skills
 claude plugin install pp-devteam@my-power-platform-skills
-claude plugin install copilot-studio@my-power-platform-skills --scope project   # instead of @skills-for-copilot-studio
+```
+
+For Copilot Studio agents, pp-devteam routes to Microsoft's official plugin. Install it from Microsoft's marketplace:
+
+```bash
+claude plugin marketplace add microsoft/skills-for-copilot-studio
+claude plugin install copilot-studio@skills-for-copilot-studio
 ```
 
 ## pp-devteam at a glance

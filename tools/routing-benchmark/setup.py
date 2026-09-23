@@ -2,8 +2,7 @@
 
   python setup.py [--baseline-ref 14731c7]
 
-- variants/cs-upstream : microsoft/skills-for-copilot-studio at the sha pinned in ../../.claude-plugin/marketplace.json,
-                         with its npm setup hook removed (its routing prompt hook is kept - that is what v0 measures)
+Needs Microsoft's official copilot-studio@skills-for-copilot-studio installed at user scope.
 - variants/old         : plugins/pp-devteam at --baseline-ref (default 14731c7 = pp-devteam 1.3.1, no routing charter)
 - fx-*/ and ot-*/      : copies of fixture/ with the logging hook and, where needed, a project profile
 Everything created here is git-ignored.
@@ -42,8 +41,8 @@ NO_TRACK = "\n".join(l for l in TRADITIONAL.splitlines() if "buildTrack" not in 
 
 # name: (profile text or None, keep agents/ folder, extra settings)
 COPIES = {
-    "fx-v0": (None, True, {}), "fx-v1": (None, True, {}), "fx-v2": (None, True, {}),
-    "fx-c": (None, True, {"enabledPlugins": {"copilot-studio@my-power-platform-skills": False, "eval-guide@eval-guide": False}}),
+    "fx-v0": (None, True, {}), "fx-v2": (None, True, {}),
+    "fx-c": (None, True, {"enabledPlugins": {"copilot-studio@skills-for-copilot-studio": False, "eval-guide@eval-guide": False}}),
     "fx-v3": (BOTH, True, {}), "fx-v4": (TRADITIONAL, False, {}),
     "ot-fresh": (None, True, {}), "ot-trad": (None, False, {}), "ot-notrack": (NO_TRACK, True, {}),
     "ot-tradprofile": (TRADITIONAL, False, {}),
@@ -61,20 +60,6 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--baseline-ref", default="14731c7")
     a = ap.parse_args()
-    market = json.load(io.open(os.path.join(REPO, ".claude-plugin", "marketplace.json"), encoding="utf-8"))
-    cs = [p for p in market["plugins"] if p["name"] == "copilot-studio"][0]["source"]
-
-    up = os.path.join(W, "variants", "cs-upstream")
-    shutil.rmtree(up, ignore_errors=True)
-    subprocess.run(["git", "clone", "--quiet", cs["url"], up], check=True)
-    subprocess.run(["git", "-C", up, "checkout", "--quiet", cs["sha"]], check=True)
-    shutil.rmtree(os.path.join(up, ".git"), ignore_errors=True)
-    hp = os.path.join(up, "hooks", "hooks.json")
-    hooks = json.load(open(hp))
-    for group in hooks["hooks"].get("SessionStart", []):
-        group["hooks"] = [h for h in group["hooks"] if "setup.js" not in h.get("command", "")]
-    json.dump(hooks, open(hp, "w"), indent=2)
-
     old = os.path.join(W, "variants", "old")
     shutil.rmtree(old, ignore_errors=True)
     os.makedirs(old)

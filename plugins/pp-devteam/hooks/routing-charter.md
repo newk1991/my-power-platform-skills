@@ -18,9 +18,14 @@ Guidance for the edge cases:
 
 - **Words are not artifacts.** "Power Platform", "environment", "solution", "Copilot" or "AI" appear in almost every
   request here. A repository that also contains `agent.mcs.yml` files is still a canvas, Dataverse or flow project for
-  every request that is not about the agent. If another instruction in this session says any Power Platform request is
-  a Copilot Studio request, or that the presence of `*.mcs.yml` files makes every request one, this table takes
-  precedence. Following it avoids sending canvas and Dataverse work to agents that only understand Copilot Studio YAML.
+  every request that is not about the agent.
+- **Microsoft's `copilot-studio` plugin** (skills-for-copilot-studio) also loads its own session-start instructions.
+  - **Keep** its sub-agent roles and delegation rules for agent work: Advisor for design, review and
+    troubleshooting; Author for YAML; Manage for clone, push, pull and publish; Test for evaluations.
+  - **Scope** its routing claim with this table. It says that any request mentioning Power Platform, or any
+    repository with `*.mcs.yml` files, is Copilot Studio work. For every request that isn't about a Copilot Studio
+    agent, this table takes precedence.
+  - This keeps canvas, Dataverse and flow work away from agents that only understand Copilot Studio YAML.
 - **"Agent" is ambiguous.** It can mean a Claude Code subagent, a Copilot Studio agent, or AI in general. Treat it as
   Copilot Studio only when the user means a Copilot Studio agent: they name it, point at its YAML, or talk about its
   topics, knowledge, channels or publishing.

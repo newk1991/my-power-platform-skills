@@ -75,22 +75,29 @@ The answer goes into `.claude/project-profile.md`, and it steers the rest of the
 
 ## Copilot Studio in the same project
 
-pp-devteam can share a project with Microsoft's **copilot-studio** authoring plugin. At session start it injects a
-short **routing charter** (`hooks/routing-charter.md`): canvas work goes to `canvas-apps`, Dataverse work to
-`dataverse`, flows to `power-automate`, and so on. Only work on a Copilot Studio agent goes to that plugin's
-Advisor, Author, Manage and Test sub-agents. The charter fires only in folders that look like Power Platform
-projects.
-
-Install the copilot-studio plugin **from this marketplace**, for example at project scope:
+pp-devteam works alongside Microsoft's official **copilot-studio** plugin
+([skills-for-copilot-studio](https://github.com/microsoft/skills-for-copilot-studio)):
 
 ```bash
-claude plugin install copilot-studio@my-power-platform-skills --scope project
+claude plugin marketplace add microsoft/skills-for-copilot-studio
+claude plugin install copilot-studio@skills-for-copilot-studio
 ```
 
-This re-listing pins Microsoft's plugin (MIT) to a tested commit and replaces its SessionStart prompt with a scoped
-note. Microsoft's prompt claims any request that mentions "Power Platform", and any repository containing an
-`agent.mcs.yml`. The plugin's setup step, skills and sub-agents are unchanged. See `AGENTS.md` for how it works and
-how to move to a newer upstream version.
+At session start pp-devteam injects a short **routing charter** (`hooks/routing-charter.md`) that sends each request to
+the plugin for its artifact:
+
+| Request is about | Goes to |
+|---|---|
+| A canvas app | `canvas-apps` |
+| Dataverse | `dataverse` |
+| Flows | `power-automate` |
+| Work on a Copilot Studio agent | Microsoft's Advisor, Author, Manage and Test sub-agents |
+
+Microsoft's plugin also loads a session-start prompt that claims every "Power Platform" request. The charter keeps
+that prompt's sub-agent delegation for agent work and scopes the rest. The charter fires only in folders that look
+like Power Platform projects.
+
+Microsoft's plugin needs Node.js 18+, plus VS Code with the Copilot Studio extension for clone, push and pull.
 
 ## Typical Workflow
 

@@ -141,20 +141,27 @@ owns which artifact. It fires only when the project looks like Power Platform wo
 `*.cdsproj`, `*.mcs.yml`, `powerpages.config.json`, `power.config.json` or `.claude/project-profile.md` within five
 levels. The scan is capped at 4,000 entries and takes about 0.1 s. It stays silent everywhere else.
 
-The charter exists so that Microsoft's **copilot-studio** plugin can be active in the same project. That plugin's
-own SessionStart prompt tells Claude that any request mentioning "Power Platform", or any repository holding an
-`agent.mcs.yml`, is Copilot Studio work. This marketplace therefore re-lists the plugin, as
-`copilot-studio@my-power-platform-skills`, pinned to a tested commit. Its marketplace entry replaces the plugin's
-hooks: Claude Code loads the entry's `hooks` **instead of** the plugin's `hooks/hooks.json`, which was verified
-on 2026-09-23. The entry keeps Microsoft's `setup.js`, which installs the npm packages its scripts need, and swaps
-the 11 KB routing prompt for a scoped note. Microsoft's skills and its four sub-agents (Advisor, Author, Manage,
-Test) load unchanged.
+The charter exists so that Microsoft's official **copilot-studio** plugin can be active in the same project. Install it
+from Microsoft's marketplace:
+- `claude plugin marketplace add microsoft/skills-for-copilot-studio`
+- `claude plugin install copilot-studio@skills-for-copilot-studio`
 
-Install `copilot-studio@my-power-platform-skills`, **not** `copilot-studio@skills-for-copilot-studio`: both
-register the same plugin name. To move to a newer upstream version:
-1. Bump `sha` in the marketplace entry.
-2. Diff upstream `hooks/hooks.json` for new hooks.
-3. Re-run the routing benchmark (see the README).
+That plugin's own SessionStart prompt tells Claude to treat any request that mentions "Power Platform", and any
+repository with an `agent.mcs.yml`, as Copilot Studio work. The charter keeps that prompt's sub-agent delegation for
+agent work and scopes its routing claim: every request that isn't about a Copilot Studio agent follows the charter
+table. Microsoft's plugin is the reference for everything agent-related:
+- its sub-agents: Advisor, Author, Manage and Test;
+- its skills and its YAML schema.
+
+pp-devteam routes to it rather than duplicating it.
+
+**Prerequisites for its sync operations** (Microsoft's README): Node.js 18+ and VS Code with the Copilot Studio
+extension, used for clone, push and pull.
+
+**History.** From 2026-09-23 this marketplace briefly re-listed the plugin with its prompt hook swapped for a scoped
+note. That worked because a marketplace entry's `hooks` replace the plugin's own. The owner chose the official plugin
+as the single point of reference instead, so the re-listing was retired. The routing benchmark
+(`tools/routing-benchmark`) measures the official plugin with the charter.
 
 ## Out of Scope
 - Custom connectors (future Postman-based skill)

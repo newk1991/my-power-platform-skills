@@ -39,7 +39,9 @@ CONFIRM WITH USER BEFORE DEPLOYING TO PRODUCTION.
 ## Copilot Studio track: the agent's own solution
 
 Use this when `buildTrack` is **Copilot Studio** or **Both**. Each agent under `agents` in the profile ships in its
-own solution. Microsoft's Copilot Studio solution guidance covers **standard-harness** agents; confirm solution
+own solution. Agent authoring and sync use Microsoft's official `copilot-studio` plugin
+(skills-for-copilot-studio). Its clone, push and pull need VS Code with the Copilot Studio extension.
+Microsoft's Copilot Studio solution guidance covers **standard-harness** agents; confirm solution
 support before promising this path for an agent built on the GitHub Copilot harness.
 
 ### What goes where

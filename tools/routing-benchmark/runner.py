@@ -13,14 +13,13 @@ from concurrent.futures import ThreadPoolExecutor
 W = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(W, "..", ".."))
 PPD = os.path.join(REPO, "plugins", "pp-devteam")   # the working copy under test
-CSU = os.path.join(W, "variants", "cs-upstream")
 OLD_PPD = os.path.join(W, "variants", "old", "plugins", "pp-devteam")   # pp-devteam 1.3.1: no routing charter
+# Microsoft's official copilot-studio@skills-for-copilot-studio must be installed at user scope.
 VARIANTS = {
-    "v0": {"dir": "fx-v0", "args": ["--plugin-dir", CSU, "--plugin-dir", OLD_PPD], "label": "BEFORE: Microsoft copilot-studio as shipped + pp-devteam 1.3.1"},
-    "v1": {"dir": "fx-v1", "args": ["--plugin-dir", OLD_PPD], "label": "scoped copilot-studio (installed) + pp-devteam 1.3.1"},
-    "v2": {"dir": "fx-v2", "args": [], "label": "AFTER: scoped copilot-studio + pp-devteam 1.4.0 charter (installed config)"},
-    "v3": {"dir": "fx-v3", "args": ["--plugin-dir", PPD], "label": "NEW: scoped copilot-studio + pp-devteam 1.5.0 (profile: Both)"},
-    "v4": {"dir": "fx-v4", "args": ["--plugin-dir", PPD], "label": "NEW: pp-devteam 1.5.0 (profile: Traditional, no agent)"},
+    "v0": {"dir": "fx-v0", "args": ["--plugin-dir", OLD_PPD], "label": "BEFORE: official copilot-studio + pp-devteam 1.3.1 (no charter)"},
+    "v2": {"dir": "fx-v2", "args": [], "label": "INSTALLED: official copilot-studio + the installed pp-devteam"},
+    "v3": {"dir": "fx-v3", "args": ["--plugin-dir", PPD], "label": "WORKING COPY: official copilot-studio + this pp-devteam (profile: Both)"},
+    "v4": {"dir": "fx-v4", "args": ["--plugin-dir", PPD], "label": "WORKING COPY: this pp-devteam (profile: Traditional, no agent)"},
     "c":  {"dir": "fx-c", "args": ["--plugin-dir", OLD_PPD], "label": "control: no copilot-studio, pp-devteam 1.3.1"},
 }
 READ_ONLY = {"Read", "Glob", "Grep", "LS", "ToolSearch", "TodoWrite", "TaskCreate", "TaskUpdate", "TaskList"}

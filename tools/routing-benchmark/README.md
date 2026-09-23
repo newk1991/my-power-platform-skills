@@ -41,14 +41,38 @@ also need `copilot-studio@my-power-platform-skills` installed at user scope.
 
 | Configuration | What it loads |
 |---|---|
-| v0 | Microsoft's plugin as shipped (its routing prompt) + pp-devteam 1.3.1 |
-| v1 | The scoped re-listing + pp-devteam 1.3.1 |
+| v0 | Microsoft's official plugin + pp-devteam 1.3.1, which has no routing charter |
 | v2 | The installed setup, as it is on this machine |
-| v3 | The scoped re-listing + this working copy of pp-devteam, with a profile marked **Both** |
+| v3 | The official plugin + this working copy of pp-devteam, with a profile marked **Both** |
 | v4 | This working copy, with a profile marked **Traditional** (no agent) |
 | c | Control: no Copilot Studio plugin |
 
 ## Results
+
+### Current setup: Microsoft's official plugin (23 September 2026)
+
+The owner made Microsoft's official `copilot-studio@skills-for-copilot-studio` the reference plugin.
+- Each setup ran 13 requests twice: 8 ordinary Power Platform requests, including a flow disguised as an "agent",
+  and 5 Copilot Studio requests.
+- Claude Code 2.1.273, Opus 5.5.
+
+| Setup | Ordinary requests kept away from Copilot Studio | Agent requests routed to Copilot Studio |
+|---|---|---|
+| v0: official plugin + pp-devteam 1.3.1 (no charter) | 16/16 | 8/10 |
+| v2: official plugin + pp-devteam 1.5.0 (installed) | 16/16 | 7/10 |
+| **v3: official plugin + pp-devteam 1.5.1, profile Both** | **16/16** | **9/10** |
+| v4: pp-devteam 1.5.1, profile Traditional | 2/2 | n/a: it offered to add the track instead |
+
+**Orchestrator with the official plugin installed:** 12 of 12. It asked the build track in every case that needed it,
+skipped it when the track was declared, and moved a Traditional project to Both when asked to add an agent.
+
+**What the agent-request "misses" were:**
+- Most were Claude exploring the agent folder with shell commands the harness blocks (`git log`, `xargs`) before
+  choosing a sub-agent.
+- One was a push-and-publish request handed to a general-purpose agent instead of Copilot Studio Manage.
+- No ordinary request was ever sent to Copilot Studio, even with Microsoft's full session-start prompt loaded.
+
+### Earlier: the scoped re-listing (retired)
 
 **23 September 2026: Claude Code 2.1.273, Opus 5.5.** Each setup ran 7 ordinary Power Platform requests and 4
 Copilot Studio agent requests, twice each:
