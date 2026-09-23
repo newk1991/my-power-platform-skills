@@ -73,9 +73,35 @@ meeting transcript. It polls the `meeting` MCP server (tools `mcp__meeting__*`, 
 companion **ai-meeting-tool** project) and dispatches the role agents as the conversation
 unfolds. Modes: copilot (propose), autopilot (apply), on_demand, notes_only.
 
+## Build track
+
+The Orchestrator's first question is the **build track**:
+- **Traditional:** canvas and model-driven apps, Dataverse, cloud flows, plug-ins, PCF or Power Pages, in a Dataverse
+  solution.
+- **Copilot Studio:** an agent authored as `*.mcs.yml` YAML, in a solution of its own.
+- **Both:** in separate solutions.
+
+The track and each agent's solution and workspace are recorded in the profile. The routing charter hook appends
+"This project: build track X" to its session-start text:
+- On a traditional project, Copilot Studio work prompts a suggestion to add the track instead of being routed
+  silently.
+- On a Copilot Studio project, agent work goes straight to the `copilot-studio` sub-agents.
+
+The ALM Engineer ships each agent in its own solution:
+- **What goes where:** the agent plus what only it uses (its flows, connection references, environment variables and
+  custom connectors). Anything shared with the app stays in the traditional solution.
+- **Setup:** one publisher for every solution, and the agent created inside its solution.
+- **Release:** managed export with per-environment deployment settings, imported in order.
+- **After import:** set environment variables, check Dataverse search, re-check authentication, and publish in the
+  target environment. Set up channels and sharing on the first import, and verify them on upgrades.
+
+The orchestrator's skill (`skills/pp-orchestrator/SKILL.md`) and agent (`agents/pp-orchestrator.md`) share the same
+body text. Change them together.
+
 ## Shared Project Profile
 
 All roles read `.claude/project-profile.md` (written by the Orchestrator):
+- buildTrack (Traditional | Copilot Studio | Both), agents (name, solution, workspace, knowledge, actions, channels, auth)
 - frontendType, dataBackend, environmentUrl, solutionName
 - customConnectors, complianceNotes, targetUsers, projectName, description
 

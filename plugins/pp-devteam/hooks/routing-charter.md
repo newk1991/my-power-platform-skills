@@ -24,6 +24,9 @@ Guidance for the edge cases:
 - **"Agent" is ambiguous.** It can mean a Claude Code subagent, a Copilot Studio agent, or AI in general. Treat it as
   Copilot Studio only when the user means a Copilot Studio agent: they name it, point at its YAML, or talk about its
   topics, knowledge, channels or publishing.
+- **An automation is not an agent.** An event-triggered job with no conversation ("when a ticket is created,
+  email the site manager") is a cloud flow for `power-automate`, even when the user calls it an agent. If you can't
+  tell whether they want a conversational agent or a flow, ask.
 - **Mixed requests get split.** For example, "release the solution that contains the agent" uses `dataverse` or the
   ALM engineer for the solution, and Copilot Studio **Manage** only to publish the agent afterwards.
 - **If the artifact is unclear, ask one short question** instead of guessing a plugin.

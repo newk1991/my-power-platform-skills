@@ -1,0 +1,9 @@
+Screens:
+  HomeScreen:
+    Children:
+      - galBoard:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            Items: =SortByColumns(Filter(AddColumns('Ops Tickets', Mins, DateDiff('Down Since', Now(), TimeUnit.Minutes)), Trim(Site.Name) = varSite.Name), "Mins", SortOrder.Descending)
+            TemplateSize: =96

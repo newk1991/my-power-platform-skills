@@ -1,0 +1,96 @@
+{
+  "skill_name": "pp-devteam-routing",
+  "evals": [
+    {
+      "id": 1,
+      "name": "canvas-gallery-delegation",
+      "cs": false,
+      "expect": "canvas-apps",
+      "prompt": "The Board gallery on HomeScreen in src/canvas takes forever to load. Can you rework its Items formula so it delegates to Dataverse?"
+    },
+    {
+      "id": 2,
+      "name": "dataverse-add-column",
+      "cs": false,
+      "expect": "dataverse",
+      "prompt": "Add a 'Last Reviewed On' date column to the ops_downtimeevent table in our Dev environment and put it on the main form."
+    },
+    {
+      "id": 3,
+      "name": "flow-failure",
+      "cs": false,
+      "expect": "power-automate",
+      "prompt": "Our 'Ops - Downtime - Send Notification' Power Automate flow failed last night for the Riverside site. Figure out which action failed and why."
+    },
+    {
+      "id": 4,
+      "name": "mda-new-view",
+      "cs": false,
+      "expect": "model-apps/dataverse",
+      "prompt": "Create a new view in the Ops Root Cause model-driven app that lists open root cause analyses grouped by site."
+    },
+    {
+      "id": 5,
+      "name": "solution-export-qat",
+      "cs": false,
+      "expect": "dataverse/alm",
+      "prompt": "Bump the OpsModel solution version and export it as managed so we can promote it to QAT."
+    },
+    {
+      "id": 6,
+      "name": "licensing-question",
+      "cs": false,
+      "expect": "answer/any-non-cs",
+      "prompt": "What Power Platform licenses do our floor supervisors need to run the canvas app on a shared tablet in the Prod environment?"
+    },
+    {
+      "id": 7,
+      "name": "env-variable-solution",
+      "cs": false,
+      "expect": "dataverse/alm",
+      "prompt": "Set up a Power Platform environment variable in the OpsModel solution for the notification group id, with no value shipped in the solution."
+    },
+    {
+      "id": 8,
+      "name": "cs-add-sharepoint-knowledge",
+      "cs": true,
+      "expect": "copilot-studio",
+      "prompt": "Add the Operations site's Documentation library as a SharePoint knowledge source to the Ops Help agent in agents/ops-help."
+    },
+    {
+      "id": 9,
+      "name": "cs-troubleshoot-general-knowledge",
+      "cs": true,
+      "expect": "copilot-studio",
+      "prompt": "The Ops Help agent keeps answering from general knowledge instead of our SharePoint site. Why, and what should I change?"
+    },
+    {
+      "id": 10,
+      "name": "cs-eval-set",
+      "cs": true,
+      "expect": "copilot-studio/eval-guide",
+      "prompt": "Write a set of evaluation test cases for the Ops Help agent, including refusals when someone asks for live ticket data."
+    },
+    {
+      "id": 11,
+      "name": "cs-push-publish",
+      "cs": true,
+      "expect": "copilot-studio",
+      "prompt": "Push my local changes to the Ops Help agent up to the Dev environment and publish it."
+    },
+    {
+      "id": 12,
+      "name": "flow-disguised-as-agent",
+      "cs": false,
+      "expect": "power-automate",
+      "prompt": "Build an agent that emails the site manager whenever a Critical downtime ticket is created in Dataverse."
+    },
+    {
+      "id": 13,
+      "name": "new-conversational-agent",
+      "cs": true,
+      "expect": "copilot-studio (Both) / offer track (Traditional)",
+      "prompt": "Create an agent that answers HR policy questions for plant staff from our SharePoint HR site."
+    }
+  ]
+}

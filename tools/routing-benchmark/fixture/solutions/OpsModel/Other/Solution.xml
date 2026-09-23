@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.25091.180" SolutionPackageVersion="9.2" languagecode="1033">
+  <SolutionManifest><UniqueName>OpsModel</UniqueName><Version>1.4.13.0</Version><Managed>0</Managed>
+    <Publisher><UniqueName>Contoso</UniqueName><CustomizationPrefix>con</CustomizationPrefix></Publisher></SolutionManifest>
+</ImportExportXml>

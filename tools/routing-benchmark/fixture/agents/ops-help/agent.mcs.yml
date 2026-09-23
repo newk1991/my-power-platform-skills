@@ -1,0 +1,9 @@
+mcs.metadata:
+  componentName: Ops Help
+kind: GptComponentMetadata
+displayName: Ops Help
+instructions: |-
+  You are Ops Help, the documentation assistant for the Ops Downtime Tracker. Answer only from the Operations site.
+conversationStarters:
+  - title: Report a downtime
+    text: How do I report a downtime on the floor tablet?

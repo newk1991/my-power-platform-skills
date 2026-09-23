@@ -62,6 +62,17 @@ Power Automate cloud flows it routes to Microsoft's official **power-automate** 
 > For Power Automate flow work, also install Microsoft's official **power-automate** plugin and
 > run `power-automate:setup` once — the Orchestrator routes flow build/debug/diagnose to its skills.
 
+## Build track: traditional, Copilot Studio, or both
+
+`/pp-orchestrator` starts by asking what you are building:
+- a **traditional Power Platform solution**: canvas and model-driven apps, Dataverse, cloud flows, plug-ins;
+- a **Copilot Studio agent in its own solution**;
+- **both**, in separate solutions.
+
+The answer goes into `.claude/project-profile.md`, and it steers the rest of the team:
+- The routing charter tells every session which track the project is on.
+- The ALM Engineer keeps each agent in its own solution, with the agent's post-import steps.
+
 ## Copilot Studio in the same project
 
 pp-devteam can share a project with Microsoft's **copilot-studio** authoring plugin. At session start it injects a

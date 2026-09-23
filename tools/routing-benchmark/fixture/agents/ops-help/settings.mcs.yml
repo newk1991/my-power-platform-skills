@@ -1,0 +1,4 @@
+schemaName: ops_help
+authenticationMode: Integrated
+aISettings:
+  useModelKnowledge: false

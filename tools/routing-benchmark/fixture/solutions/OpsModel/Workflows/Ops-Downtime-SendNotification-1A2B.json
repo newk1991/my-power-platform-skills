@@ -1,0 +1,1 @@
+{"properties":{"displayName":"Ops - Downtime - Send Notification","definition":{"triggers":{"manual":{"type":"Request","kind":"Button"}},"actions":{"Send_an_email":{"type":"OpenApiConnection"}}}}}
